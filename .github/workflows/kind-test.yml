@@ -1,0 +1,29 @@
+name: Test KinD
+
+on: pull_request
+
+jobs:
+    tests-with-kind:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                fetch-depth: 0
+            
+            - name: Setup Helm
+              uses: helm/setup-helm@v3
+              with:
+                version: v3.12.1
+            
+            - name: Create KinD cluster
+              uses: helm/kind-action@v1.8.0
+
+            - name: Install capsule
+              run: |
+                helm repo add projectcapsule https://projectcapsule.github.io/charts
+                helm install capsule projectcapsule/capsule \
+                    -n capsule-system \
+                    --create-namespace \
+                    --version=0.6.0 \
+                    --wait
