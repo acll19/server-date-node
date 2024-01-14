@@ -1,0 +1,23 @@
+# https://capsule.clastix.io/docs/contributing/development/#setup-a-kubernetes-cluster
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+networking:
+  apiServerAddress: "0.0.0.0"
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: ClusterConfiguration
+    metadata:
+      name: config
+    apiServer:
+      certSANs:
+      - localhost
+      - 127.0.0.1
+      - kubernetes
+      - kubernetes.default.svc
+      - kubernetes.default.svc.cluster.local
+      - kind
+      - 0.0.0.0
+      - HOST_IP
+- role: worker

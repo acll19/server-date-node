@@ -15,9 +15,28 @@ jobs:
               uses: azure/setup-helm@v3
               with:
                 version: v3.12.1
+
+            - name: Runner IP
+              id: runnerIp
+              run: |
+                RUNNER_IP=$(curl https://api.ipify.org)
+                echo $RUNNER_IP
+                sed -i "s/HOST_IP/$RUNNER_IP/g" ./ci/kind.config.yaml
             
             - name: Create KinD cluster
               uses: helm/kind-action@v1.8.0
+              with:
+                config: ./ci/kind.config.yaml
+
+            - name: Load docker images
+              run: |
+                docker pull ghcr.io/projectcapsule/capsule
+                kind load docker-image ghcr.io/projectcapsule/capsule:latest \
+                    --name chart-testing
+
+                docker pull clastix/kubectl:v1.28
+                kind load docker-image clastix/kubectl:v1.28 \
+                    --name chart-testing
 
             - name: Install capsule
               run: |
@@ -26,4 +45,7 @@ jobs:
                     -n capsule-system \
                     --create-namespace \
                     --version=0.6.0 \
-                    --wait
+                    --debug \
+                    --timeout 10m
+
+                kubectl get deploy
