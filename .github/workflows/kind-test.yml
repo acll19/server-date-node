@@ -48,4 +48,20 @@ jobs:
                     --debug \
                     --timeout 10m
 
-                kubectl get deploy
+                kubectl get deploy -n capsule-system
+
+            - name: Test install tenant
+              run: |
+                echo <<EOF
+                  apiVersion: capsule.clastix.io/v1beta2
+                  kind: Tenant
+                  metadata:
+                    annotations:
+                      tenant.test.aca.org/name: test-tenant
+                    labels:
+                      tenant.test.aca.org/name: testTenant
+                    name: test-tenant
+                  spec:
+                    namespaceOptions:
+                      quota: 5
+                EOF | kubectl apply -f -
