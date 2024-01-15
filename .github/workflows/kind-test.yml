@@ -52,7 +52,7 @@ jobs:
 
             - name: Test install tenant
               run: |
-                echo <<EOF
+                echo "
                   apiVersion: capsule.clastix.io/v1beta2
                   kind: Tenant
                   metadata:
@@ -64,7 +64,7 @@ jobs:
                   spec:
                     namespaceOptions:
                       quota: 5
-                EOF | kubectl apply -f -
+                " | kubectl apply -f -
                 
                 kubectl wait --for=jsonpath'{.status.state}'=Active \
                   tenant/tenant-test \
