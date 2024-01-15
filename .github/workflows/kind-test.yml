@@ -65,3 +65,5 @@ jobs:
                     namespaceOptions:
                       quota: 5
                 EOF | kubectl apply -f -
+                
+                kubectl wait --for=state=Active
