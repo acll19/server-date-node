@@ -66,4 +66,4 @@ jobs:
                       quota: 5
                 EOF | kubectl apply -f -
                 
-                kubectl wait --for=state=Active
+                kubectl wait --for=state=Active Tenant --timeout=300s
