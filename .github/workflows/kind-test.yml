@@ -66,4 +66,7 @@ jobs:
                       quota: 5
                 EOF | kubectl apply -f -
                 
-                kubectl wait --for=state=Active Tenant --timeout=300s
+                kubectl wait --for=jsonpath'{.status.state}'=Active \
+                  tenant/tenant-test \
+                  --timeout=300s \
+                  --ojsonpath='{.status}' | jq
